@@ -18,6 +18,12 @@ Prerequisites
 -------------
 Please ensure all following steps are complete prior to running 
 
+## Raspberry Pi Zero 2 W
+1. Download the latest version of `Raspberry Pi Imager` from [The Official Raspberry Pi Website](https://www.raspberrypi.com/software/)
+2. Flash your selected microSD card with the latest version of Raspberry Pi OS.
+	- Please note: Enable SSH and provide network details
+3. SSH into your machine!
+
 Run PiDriver
 ------------
 ```
