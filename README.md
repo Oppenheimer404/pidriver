@@ -9,7 +9,7 @@ PiDriver is a utility built for the RaspberryPi Zero 2 W. The goal of PiDriver i
 - Log Network SSID & Juicy info + GPS Location
 - Connect to one (or more) 'Base Station' ssid's to preform file exfiltration
 
-Since those features seem relativley easy to impliment, I want to go a step or two further. I also want to;
+Since those features seem relativley easy to impliment, I want to go a step or two further. I also want to add;
 
 - Geofencing to prevent scanning in specific areas (e.g. while at work, school, home)
 - Automatic power
