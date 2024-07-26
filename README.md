@@ -14,15 +14,12 @@ Since those features seem relativley easy to impliment, I want to go a step or t
 - Geofencing to prevent scanning in specific areas (e.g. while at work, school, home)
 - Automatic power
 
-Prerequisites
--------------
-Please ensure all following steps are complete prior to running 
-
-## Raspberry Pi Zero 2 W
+Raspberry Pi Zero 2 W Setup
+---------------------------
 1. Download the latest version of `Raspberry Pi Imager` from [The Official Raspberry Pi Website](https://www.raspberrypi.com/software/)
 2. Flash your selected microSD card with the latest version of Raspberry Pi OS.
-	- Please note: Enable SSH and provide network details
-3. SSH into your machine!
+**Note:** We will be using SSH to connect via another computer. Please enable SSH and provide network details during flash process.
+3. SSH into your machine! `ssh foo@ipAddress`
 
 Run PiDriver
 ------------
@@ -34,6 +31,10 @@ sudo ./PiDriver.py
 
 Install PiDriver
 ----------------
-To install 
+To install onto your computer (so you can just run 'pidriver' from any terminal), run:
 
-this will install 'pidriver' to /usr/sbin/pidriver
+```bash
+sudo python setup.py install
+```
+
+this will install 'pidriver' to `/usr/sbin/pidriver` which should be in your `$PATH` variable.
