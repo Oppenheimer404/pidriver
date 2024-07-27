@@ -38,7 +38,9 @@ To install onto your computer (so you can just run 'pidriver' from any terminal)
 sudo pip install git+https://github.com/Oppenheimer404/PiDriver.git
 ```
 
-this will install 'pidriver' to `/usr/sbin/pidriver` which should be in your `$PATH` variable.
+This will install 'pidriver' to `/usr/sbin/pidriver` which should be in your `$PATH` variable using `python setup.py install`.
+
+To uninstall, simply `sudo pip uninstall PiDriver`!
 
 **Note:** Should you have any issues you may want to attempt to use the following command, although uninstalling is much more involved;
 
