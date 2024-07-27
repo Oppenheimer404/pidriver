@@ -12,7 +12,6 @@ PiDriver is a utility built for the RaspberryPi Zero 2 W. The goal of PiDriver i
 Since those features seem relativley easy to impliment, I want to go a step or two further. I also want to add;
 
 - Geofencing to prevent scanning in specific areas (e.g. while at work, school, home)
-- Automatic power
 
 Raspberry Pi Zero 2 W Setup
 ---------------------------
@@ -23,20 +22,28 @@ Raspberry Pi Zero 2 W Setup
 4. Run `sudo apt update && sudo apt upgrade` to ensure everything is up to date. (This might take a while - Go refill your coffee or something...)
 5. That's it! (Stay logged into SSH as all setup will be complete via CLI)
 
-Run PiDriver
-------------
-```
+Run PiDriver from git Repository
+--------------------------------
+```bash
 git clone https://github.com/Oppenheimer404/PiDriver.git
 cd PiDriver
 sudo ./PiDriver.py
 ```
 
-Install PiDriver
-----------------
+Install PiDriver Using pip
+--------------------------
 To install onto your computer (so you can just run 'pidriver' from any terminal), run:
 
 ```bash
-sudo python setup.py install
+sudo pip install git+https://github.com/Oppenheimer404/PiDriver.git
 ```
 
 this will install 'pidriver' to `/usr/sbin/pidriver` which should be in your `$PATH` variable.
+
+**Note:** Should you have any issues you may want to attempt to use the following command, although uninstalling is much more involved;
+
+```bash
+git clone https://github.com/Oppenheimer404/PiDriver.git
+cd PiDriver
+sudo python setup.py install 
+```
