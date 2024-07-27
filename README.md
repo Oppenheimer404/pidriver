@@ -30,7 +30,7 @@ cd PiDriver
 sudo ./PiDriver.py
 ```
 
-Install PiDriver Using pip
+Install PiDriver Using `pip`
 --------------------------
 To install onto your computer (so you can just run 'pidriver' from any terminal), run:
 
