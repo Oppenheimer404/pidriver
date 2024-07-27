@@ -30,22 +30,25 @@ cd PiDriver
 sudo ./PiDriver.py
 ```
 
-Install PiDriver Using `pip`
---------------------------
-To install onto your computer (so you can just run 'pidriver' from any terminal), run:
+Install PiDriver
+----------------
+To install onto your Raspberry Pi (so you can just run `pidriver` from any terminal), run:
 
-```bash
-sudo pip install git+https://github.com/Oppenheimer404/PiDriver.git
-```
-
-This will install 'pidriver' to `/usr/sbin/pidriver` which should be in your `$PATH` variable using `python setup.py install`.
-
-To uninstall, simply `sudo pip uninstall PiDriver`!
-
-**Note:** Should you have any issues you may want to attempt to use the following command, although uninstalling is much more involved;
+Using `dpkg -i`
+-----------
 
 ```bash
 git clone https://github.com/Oppenheimer404/PiDriver.git
 cd PiDriver
-sudo python setup.py install 
+sudo dpkg -i pidriver.deb
+```
+
+**Note:** To uninstall use `sudo dpkg -P pidriver` to purge everything - or use `sudo dpkg -r pidriver` to only remove the pidriver package.
+
+Using `apt`
+-----------
+**Note:** Not yet working
+
+```bash
+sudo apt install NOTAVALIABLE
 ```
