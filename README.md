@@ -31,7 +31,7 @@ Install GoLang
 3. Execute the following command to **remove any previous Go installation**. This will delete the /usr/local/go folder (if it exists), then extract the archive you just downloaded into /usr/local, creating a fresh Go tree in /usr/local/go:
 
 ```bash
-sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $goinstallation
+rm -rf /usr/local/go && tar -C /usr/local -xzf $goinstallation
 ```
 **Note:** You will likely need to add `sudo` before `rm` and `tar` to ensure you have the proper permissions.
 
