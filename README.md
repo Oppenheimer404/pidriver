@@ -40,7 +40,7 @@ rm -rf /usr/local/go && tar -C /usr/local -xzf $goinstallation
 ```bash
 export PATH=$PATH:/usr/local/go/bin
 ```
-**Note:** This is simply so that you can execute go binaries via terminal from anywhere locally.
+**Note:** This is so that you can execute go binaries via terminal from anywhere locally.
 
 5. **Reboot** to apply changes using `sudo reboot`
 
