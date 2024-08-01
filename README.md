@@ -19,14 +19,14 @@ Install Go
 ```bash
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $goinstallation
 ```
-**Note:** You will likely need to add `sudo` before `rm` and `tar` to ensure you have the proper permissions
+**Note:** You will likely need to add `sudo` before `rm` and `tar` to ensure you have the proper permissions.
 
 4. Add /usr/local/go/bin to the PATH environment variable by adding the following line to your $HOME/.profile:
 
 ```bash
 export PATH=$PATH:/usr/local/go/bin
 ```
-**Note:** This is simply so that you can execute go binaries via terminal from anywhere locally
+**Note:** This is simply so that you can execute go binaries via terminal from anywhere locally.
 
 5. **Reboot** to apply changes using `sudo reboot`
 
