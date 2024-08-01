@@ -2,16 +2,23 @@
 
 What is PiDriver
 ----------------
-PiDriver is a utility built for the RaspberryPi Zero 2 W. The goal of PiDriver is to enable a RPIZero2W to autonomously wardrive. This includes being able to;
+PiDriver is a utility built for the RaspberryPi Zero 2 W and written in Go programming language.
 
-- Scan for Networks
-- Determine Approximate GPS Location
-- Log Network SSID & Juicy info + GPS Location
-- Connect to one (or more) 'Base Station' ssid's to preform file exfiltration
+Installing Go
+-------------
+1. Visit [The Go Doccumentation](https://go.dev/doc/install) and **download the latest version of Go**. (You can follow the steps found in the official docs - although I reccomend sticking to this unoffical guide as I will do my best to cover all steps in detail )`accurate as of go1.22.5`
+2. **VERIFY YOUR HASHES**
+    - Verifying a hash ensures that the file you downloaded isn't compromised.
+    - To do this - run `sha256sum $filename` where `$filename` is the file you just downloaded.
+    - Ensure the resulting hash matches the provided hash found [Here](https://go.dev/dl/).
+3. Execute the following command to **remove any previous Go installation**. This will delete the /usr/local/go folder (if it exists), then extract the archive you just downloaded into /usr/local, creating a fresh Go tree in /usr/local/go:
 
-Since those features seem relativley easy to impliment, I want to go a step or two further. I also want to add;
+```bash
+rm -rf /usr/local/go && tar -C /usr/local -xzf go1.22.5.linux-amd64.tar.gz
+```
 
-- Geofencing to prevent scanning in specific areas (e.g. while at work, school, home)
+4. 
+
 
 Raspberry Pi Zero 2 W Setup
 ---------------------------
@@ -27,28 +34,9 @@ Run PiDriver from git Repository
 ```bash
 git clone https://github.com/Oppenheimer404/PiDriver.git
 cd PiDriver
-sudo ./PiDriver.py
+
 ```
 
 Install PiDriver
 ----------------
 To install onto your Raspberry Pi (so you can just run `pidriver` from any terminal), run:
-
-Using `dpkg -i`
------------
-
-```bash
-git clone https://github.com/Oppenheimer404/PiDriver.git
-cd PiDriver
-sudo dpkg -i pidriver.deb
-```
-
-**Note:** To uninstall use `sudo dpkg -P pidriver` to purge everything - or use `sudo dpkg -r pidriver` to only remove the pidriver package.
-
-Using `apt`
------------
-**Note:** Not yet working
-
-```bash
-sudo apt install NOTAVALIABLE
-```
