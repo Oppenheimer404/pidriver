@@ -4,9 +4,12 @@ What is PiDriver
 ----------------
 PiDriver is a utility built for the RaspberryPi Zero 2 W and written in Go programming language.
 
-Installing Go
+What you need to do;
+
+Install Go
 -------------
-1. Visit [The Go Doccumentation](https://go.dev/doc/install) and **download the latest version of Go**. (You can follow the steps found in the official docs - although I reccomend sticking to this unoffical guide as I will do my best to cover all steps in detail )`accurate as of go1.22.5`
+1. Visit [The Go Doccumentation](https://go.dev/doc/install) and **download the latest version of Go**. (You can follow the steps found in the official docs - although I reccomend sticking to this unoffical guide as I will do my best to cover all steps in detail )`accurate as of go 1.22.5`
+    - Ensure you download the **ARMv6** version as it is compatable with RaspberryPiOS.
 2. **VERIFY YOUR HASHES**
     - Verifying a hash ensures that the file you downloaded isn't compromised.
     - To do this - run `sha256sum $filename` where `$filename` is the file you just downloaded.
@@ -14,13 +17,23 @@ Installing Go
 3. Execute the following command to **remove any previous Go installation**. This will delete the /usr/local/go folder (if it exists), then extract the archive you just downloaded into /usr/local, creating a fresh Go tree in /usr/local/go:
 
 ```bash
-rm -rf /usr/local/go && tar -C /usr/local -xzf go1.22.5.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $goinstallation
 ```
+**Note:** You will likely need to add `sudo` before `rm` and `tar` to ensure you have the proper permissions
 
-4. 
+4. Add /usr/local/go/bin to the PATH environment variable by adding the following line to your $HOME/.profile:
 
+```bash
+export PATH=$PATH:/usr/local/go/bin
+```
+**Note:** This is simply so that you can execute go binaries via terminal from anywhere locally
 
-Raspberry Pi Zero 2 W Setup
+5. **Reboot** to apply changes using `sudo reboot`
+
+6. Verify go is installed by running `go version`
+**Note:** You can now safely remove the .tar.gz installation file.
+
+Setup Raspberry Pi Zero 2 W
 ---------------------------
 1. Download the latest version of `Raspberry Pi Imager` from [The Official Raspberry Pi Website](https://www.raspberrypi.com/software/)
 2. Flash your selected microSD card with the latest version of Raspberry Pi OS.
