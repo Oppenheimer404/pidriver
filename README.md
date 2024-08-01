@@ -23,6 +23,7 @@ Install GoLang
 --------------
 1. Visit [The Go Doccumentation](https://go.dev/doc/install) and **download the latest version of Go**. (You can follow the steps found in the official docs - although I reccomend sticking to this unoffical guide as I will do my best to cover all steps in detail )`accurate as of go 1.22.5`
     - Ensure you download the **ARMv6** version as it is compatable with RaspberryPiOS.
+    - CLI Command: `wget https://go.dev/dl/go{version}.linux-armv6l.tar.gz`
 2. **VERIFY YOUR HASHES**
     - Verifying a hash ensures that the file you downloaded isn't compromised.
     - To do this - run `sha256sum $filename` where `$filename` is the file you just downloaded.
