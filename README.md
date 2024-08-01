@@ -4,7 +4,8 @@ What is PiDriver
 ----------------
 PiDriver is a utility built for the RaspberryPi Zero 2 W and written in Go programming language.
 
-What you need to do;
+How to Set-Up PiDriver on a Raspberry Pi Zero 2 W
+-------------------------------------------------
 
 Install Go
 -------------
