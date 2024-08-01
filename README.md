@@ -4,11 +4,23 @@ What is PiDriver
 ----------------
 PiDriver is a utility built for the RaspberryPi Zero 2 W and written in Go programming language.
 
-How to Set-Up PiDriver on a Raspberry Pi Zero 2 W
+Building from Source (Reccomended)
 -------------------------------------------------
+Building from source provides trust to the end-user via transparent practices. You should not trust precompiled binaries from unverified sources.
 
-Install Go
--------------
+Just follow these steps -
+
+Setup Raspberry Pi Zero 2 W
+---------------------------
+1. Download the latest version of `Raspberry Pi Imager` from [The Official Raspberry Pi Website](https://www.raspberrypi.com/software/)
+2. Flash your selected microSD card with the latest version of Raspberry Pi OS.
+**Note:** We will be using SSH to connect via another computer. Please enable SSH and provide network details during flash process.
+3. SSH into your machine. `ssh foo@ipAddress`
+4. Run `sudo apt update && sudo apt upgrade` to ensure everything is up to date. (This might take a while - Go refill your coffee or something...)
+5. That's it! (Stay logged into SSH as all setup will be complete via CLI)
+
+Install GoLang
+--------------
 1. Visit [The Go Doccumentation](https://go.dev/doc/install) and **download the latest version of Go**. (You can follow the steps found in the official docs - although I reccomend sticking to this unoffical guide as I will do my best to cover all steps in detail )`accurate as of go 1.22.5`
     - Ensure you download the **ARMv6** version as it is compatable with RaspberryPiOS.
 2. **VERIFY YOUR HASHES**
@@ -34,22 +46,12 @@ export PATH=$PATH:/usr/local/go/bin
 6. Verify go is installed by running `go version`
 **Note:** You can now safely remove the .tar.gz installation file.
 
-Setup Raspberry Pi Zero 2 W
----------------------------
-1. Download the latest version of `Raspberry Pi Imager` from [The Official Raspberry Pi Website](https://www.raspberrypi.com/software/)
-2. Flash your selected microSD card with the latest version of Raspberry Pi OS.
-**Note:** We will be using SSH to connect via another computer. Please enable SSH and provide network details during flash process.
-3. SSH into your machine. `ssh foo@ipAddress`
-4. Run `sudo apt update && sudo apt upgrade` to ensure everything is up to date. (This might take a while - Go refill your coffee or something...)
-5. That's it! (Stay logged into SSH as all setup will be complete via CLI)
+Clone PiDriver Repo
+-------------------
 
-Run PiDriver from git Repository
---------------------------------
-```bash
-git clone https://github.com/Oppenheimer404/PiDriver.git
-cd PiDriver
-
-```
+Build PiDriver Binary
+---------------------
+# Build inside bin
 
 Install PiDriver
 ----------------
