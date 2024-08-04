@@ -1,4 +1,4 @@
-
 # Log Files
 *.oppie
 *.csv
+.vscode*
