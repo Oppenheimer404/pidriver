@@ -1,4 +1,8 @@
 # Log Files
 *.oppie
-*.csv
+
+# VSCode Stuff
 .vscode*
+
+# Data Files
+*.csv
