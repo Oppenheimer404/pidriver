@@ -1,5 +1,5 @@
 package logging
 
 func Test () string {
-	return "YoBro"
+	return "Foo Bar"
 }

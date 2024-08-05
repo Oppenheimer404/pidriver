@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Oppenheimer404/pidriver/internal/logging"
+	"github.com/Oppenheimer404/pidriver/logging"
 )
 
 func main () {
