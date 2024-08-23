@@ -1,5 +1,6 @@
 # Log Files
 *.oppie
+*.old
 
 # VSCode Stuff
 .vscode*
