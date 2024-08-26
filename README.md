@@ -2,7 +2,16 @@
 
 ## What is PiDriver
 -------------------
-PiDriver is a local wardriving utility built for the RaspberryPi Zero 2 W and written in Go programming language.
+PiDriver is a wardriving utility built with automation in mind!
+
+Built to run on the Raspberry Pi Zero 2 W:
+
+- Processor:
+    - Broadcom BCM2710A1, quad-core 64-bit SoC (64-bit Arm Cortex-A53 @ 1GHz)
+- Memory:
+    - 512MB LPDDR2
+- Connectivity:
+    - 2.4GHz IEEE 802.11b/g/n wireless LAN, Bluetooth 4.2, BLE
 
 ## Setup Raspberry Pi Zero 2 W
 ------------------------------
@@ -15,8 +24,8 @@ PiDriver is a local wardriving utility built for the RaspberryPi Zero 2 W and wr
 
 ## Install GoLang
 -----------------
-1. Visit [The Go Doccumentation](https://go.dev/doc/install) and **download the latest version of Go**. (You can follow the steps found in the official docs - although I reccomend sticking to this unoffical guide as I will do my best to cover all steps in detail `accurate as of go 1.22.5`)
-    - Ensure you download the **ARMv6** version as it is compatable with RaspberryPiOS.
+1. Visit [The Go Documentation](https://go.dev/doc/install) and **download the latest version of Go**. (You can follow the steps found in the official docs - although I recommend sticking to this unofficial guide as I will do my best to cover all steps in detail `accurate as of go 1.22.5`)
+    - Ensure you download the **ARMv6** version as it is compatible with RaspberryPiOS.
     - CLI Command: `wget https://go.dev/dl/go{version}.linux-armv6l.tar.gz`
 2. **VERIFY YOUR HASHES**
     - Verifying a hash ensures that the file you downloaded isn't compromised.
