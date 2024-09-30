@@ -1,13 +1,21 @@
 package main
 
 import (
-    "fmt"
+    // "fmt"
+    "log"
     "github.com/oppenheimer404/pidriver/pidriver/scanner"
 )
 
+const (
+    REQUEST_WIFI_DATA = "wifi"
+    REQUEST_BLUETOOTH_DATA = "bt"
+)
+
 func main() {
-    x := scanner.Wifi()
-    fmt.Println(x)
-    x = scanner.BT()
-    fmt.Println(x)
+    response, err := scanner.Request(REQUEST_WIFI_DATA)
+    if err != nil {
+        log.Println(err)
+    } else {
+        log.Println(response)
+    }
 }
