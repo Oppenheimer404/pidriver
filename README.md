@@ -20,6 +20,7 @@ Built to run on the Raspberry Pi Zero 2 W:
 **Note:** We will be using SSH to connect via another computer. Please enable SSH and provide network details during flash process.
 2. Flash your selected microSD card with the latest version of Raspberry Pi OS.
 3. SSH into your machine. `ssh foo@ipAddress`
+**Note:** I recommend reserving an IP via DHCP on your home network for an easier time potentially reconnecting in the future.
 4. Run `sudo apt update && sudo apt upgrade` to ensure everything is up to date. (This might take a while - Go refill your coffee or something...)
 5. That's it! (Stay logged into SSH as all setup will be complete via CLI)
 
