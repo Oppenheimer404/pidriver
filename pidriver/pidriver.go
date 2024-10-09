@@ -1,100 +1,81 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
-	"time"
-	"your_project_path/wifi" // Import the wifi package
+	"os"
+
+	"github.com/oppenheimer404/pidriver/pidriver/gps"
+	"github.com/oppenheimer404/pidriver/pidriver/status"
+	"github.com/oppenheimer404/pidriver/pidriver/config"
+	// "github.com/oppenheimer404/pidriver/pidriver/wifi"
 )
 
-// Function that handles WiFi scanning and outputs results
-func scanWiFi() {
-	// Call the wifi.Request function to scan for networks
-	networks, err := wifi.Request()
+// Custom help page
+func customUsage() {
+	fmt.Fprintf(os.Stderr, "Usage:\n")
+	fmt.Fprintf(os.Stderr, "	pidriver \n")
+	fmt.Fprintf(os.Stderr, "  --start	Start pidriver with current configuration\n")
+	fmt.Fprintf(os.Stderr, "  -s		Shortcut for starting the process\n")
+	fmt.Fprintf(os.Stderr, "  --reset	Reset config to default values\n")
+}
+
+// Error handling
+func checkFatal(err error) {
 	if err != nil {
-		log.Fatalf("failed to scan networks: %v", err)
-	}
-
-	// Print the details of each network
-	fmt.Println("Visible WiFi Networks:")
-	for _, network := range networks {
-		fmt.Printf("SSID: %s, BSSID: %s, Frequency: %d MHz, Signal: %d dBm, Channel: %d\n",
-			network.SSID, network.BSSID, network.Frequency, network.Signal, network.Channel)
+		log.Fatal(err)
 	}
 }
 
-// rta function (same as before)
-func rta(ch chan<- string) {
-	ticker := time.NewTicker(200 * time.Millisecond)
-	defer ticker.Stop()
-
-	for count := 0; count <= 100; count++ {
-		<-ticker.C
-		ch <- fmt.Sprintf("Routine A count: %d", count)
+// Pseudo "main" function
+func start() {
+	// Verify everything is working
+	deviceStatus, err := status.Verify(status.ALL)
+	checkFatal(err)
+	if !deviceStatus {
+		fmt.Println("Something Broke")
+	} else {
+		fmt.Println("All devices working!")
 	}
-	close(ch)
-}
 
-// rtb function (same as before)
-func rtb(ch chan<- string) {
-	ticker := time.NewTicker(500 * time.Millisecond)
-	defer ticker.Stop()
-
-	for count := 0; count <= 100; count++ {
-		<-ticker.C
-		ch <- fmt.Sprintf("Routine B count: %d", count)
-	}
-	close(ch)
+	// Fetch GPS location as an example
+	gpsLocation, err := gps.Request(gps.CURRENT)
+	checkFatal(err)
+	fmt.Println(gpsLocation)
+	// Additional functionality like wifi.Request() can be added
 }
 
 func main() {
-	// Channels for rta and rtb
-	rtaCh := make(chan string)
-	rtbCh := make(chan string)
+	// Load the configuration
+	cfg, err := config.Load()
+	checkFatal(err)
+	fmt.Print(cfg.Banner, "\n")
+	fmt.Printf("[%s] v%s by %s\n", cfg.AppName, cfg.Version, cfg.Author)
 
-	// Start rta and rtb goroutines
-	go rta(rtaCh)
-	go rtb(rtbCh)
+	// Define the flags
+	var startFlagA, startFlagB, resetFlag bool
+	flag.BoolVar(&startFlagA, "start", false, "Start the process")
+	flag.BoolVar(&startFlagB, "s", false, "Shortcut for starting the process")
+	flag.BoolVar(&resetFlag, "reset", false, "Reset config to default values")
 
-	// Combined channel for merged outputs
-	combinedCh := make(chan string)
-	var wg sync.WaitGroup
-	wg.Add(2)
+	flag.Usage = customUsage // Assign custom usage function
 
-	// Forwarding channels to combinedCh
-	go forward(rtaCh, combinedCh, &wg)
-	go forward(rtbCh, combinedCh, &wg)
+	// Parse the flags
+	flag.Parse()
 
-	go func() {
-		wg.Wait()
-		close(combinedCh)
-	}()
-
-	// Collect and print in batches of 10
-	var results []string
-	for msg := range combinedCh {
-		results = append(results, msg)
-		if len(results) == 10 {
-			fmt.Println("Batch of 10 results:")
-			for _, result := range results {
-				fmt.Println(result)
-			}
-			fmt.Println("---------------------")
-			results = nil
-		}
+	// Handle the flags
+	switch {
+	case startFlagA || startFlagB: // Run pidriver
+		start()
+	case resetFlag: // Reset configuration file
+		err = cfg.Reset()
+		checkFatal(err)
+		fmt.Println("Config has been reset successfully!")
+	default:
+		// If no valid flags are provided, print custom usage and exit
+		flag.Usage()
+		os.Exit(1)   // Exit with a non-zero status code
 	}
-
-	// Print remaining results
-	if len(results) > 0 {
-		fmt.Println("Final batch of results:")
-		for _, result := range results {
-			fmt.Println(result)
-		}
-		fmt.Println("---------------------")
-	}
-
-	// WiFi scan after routines complete
-	scanWiFi()
-
-	fmt.Println("Main function completed")
 }
+
