@@ -27,6 +27,14 @@ var defaultConfig = Config{
 	
 	`,
 	"Version": "0.0.1",
+	"WifiEnabled": true,
+	"WifiRate": 1000,
+	"BluetoothEnabled": true,
+	"BluetoothRate": 1000,
+	"GPSEnabled": true,
+	"GPSRate": 4000,
+	"GPSTimeout": 60,
+	"VerboseMode": true,
 }
 
 // createDefaultConfig initializes the default configuration and writes it to a file.
@@ -47,7 +55,7 @@ func writeConfigToFile(config *Config, filePath string) error {
 		return fmt.Errorf("failed to open config file %s for writing: %v", filePath, err)
 	}
 	defer file.Close()
-
+	
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "    ") // Pretty print
 	if err := encoder.Encode(config); err != nil {
@@ -57,9 +65,59 @@ func writeConfigToFile(config *Config, filePath string) error {
 	return nil
 }
 
+// List lists the current configuration
+func (c *Config) Help() {
+	fmt.Fprintf(os.Stderr, `Configuration Options:
+	
+General Configuration:
+	- AppName <new_name>         Set the name of the application.
+	- Version <new_version>      Update the application version.
+	- Banner <new_banner>        Update the banner displayed at startup.
+
+WiFi Configuration:
+	- WifiEnabled <true/false>   Enable or disable WiFi scanning.
+	- WifiRate <rate>            Set the scanning rate for WiFi networks (in milliseconds).
+
+Bluetooth Configuration:
+	- BluetoothEnabled <true/false> Enable or disable Bluetooth scanning.
+	- BluetoothRate <rate>       Set the scanning rate for Bluetooth devices (in milliseconds).
+
+GPS Configuration:
+	- GPSEnabled <true/false>    Enable or disable GPS tracking.
+	- GPSRate <rate>             Set the location update rate for GPS (in milliseconds).
+	- GPSTimeout <timeout>       Set the maximum wait time for a GPS fix (in seconds).
+
+Misc. Configuration:
+	- VerboseMode <true/false>		Enable or disable logging output to console
+
+To modify a setting, use the following syntax:
+	--config <Option> <new_value>
+Examples:
+	--config RateWifi 500
+	--config WifiEnabled true
+	--config GPSTimeout 30
+
+For more details, visit the documentation or run 'pidriver --help'.
+`)
+}
+
 // Update dynamically updates a key in the configuration map.
 func (c *Config) Update(key string, value interface{}) error {
+	// Check if the key exists in the config
+	if existingValue, exists := (*c)[key]; exists {
+		// Compare the new value with the existing value
+		if existingValue == value {
+			// Value is the same, no update needed
+			return nil // or return an error if you want to indicate no change
+		}
+	} else {
+		return fmt.Errorf("unknown configuration value: try `-c help`")
+	}
+
+	// Update the config with the new value
 	(*c)[key] = value
+
+	// Write the updated config back to the file
 	return writeConfigToFile(c, DEFAULT_CONF)
 }
 

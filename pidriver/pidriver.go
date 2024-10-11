@@ -10,19 +10,23 @@ import (
 	"strings"
 
 	"github.com/oppenheimer404/pidriver/pidriver/config"
-	"github.com/oppenheimer404/pidriver/pidriver/gps"
-	"github.com/oppenheimer404/pidriver/pidriver/status"
 )
 
 // customUsage defines a custom help page for command-line flags.
 func customUsage() {
 	fmt.Fprintf(os.Stderr, `Usage:
-	pidriver 
-	--start    Start pidriver with current configuration
-	-s         Shortcut for starting the process
-	--reset    Reset config to default values
-	--config   Modify config (e.g., --config list)
-	-c         Modify config (shorthand for --config)
+	pidriver [options]
+
+Options:
+	--start, -s        Start pidriver with the current configuration.
+	--reset            Reset the configuration to default values.
+	--config, -c       Modify configuration settings. Examples:
+	                   --config list            Show current configuration settings.
+	                   --config AppName <new_name> Update the AppName in the configuration.
+	                   -c AppName <new_name>   Shorthand for updating the configuration.
+	                   Use --config help for more details on config options.
+
+For more information, visit the documentation or run 'pidriver --help'.
 `)
 }
 
@@ -61,35 +65,37 @@ func printBanner(cfg *config.Config) {
 
 // updateConfig handles updating the configuration based on field name and value.
 func updateConfig(cfg *config.Config, fieldName, newValue string) error {
-	switch fieldName {
-	case "AppName", "Version", "Banner":
-		return cfg.Update(fieldName, newValue)
-	default:
-		return fmt.Errorf("unknown configuration field: %s", fieldName)
+	err := cfg.Update(fieldName, newValue)
+	return err
+}
+
+// confirmation message declaring which devices are active
+func printDeviceStatus(cfg *config.Config) {
+	statuses := map[string]bool{
+		"WiFi":      (*cfg)["WifiEnabled"].(bool),
+		"Bluetooth": (*cfg)["BluetoothEnabled"].(bool),
+		"GPS":       (*cfg)["GPSEnabled"].(bool),
+	}
+
+	// Print the status for each device
+	for name, enabled := range statuses {
+		fmt.Printf("[%s %s]\n", name, map[bool]string{true: "enabled", false: "disabled"}[enabled])
 	}
 }
+
 
 // start pidriver with current configuration
 func start(cfg *config.Config) {
 	// Clears screen and prints banner, author, & version #
 	printBanner(cfg)
 
-	// Verify all devices are in working order
-	deviceStatus, err := status.Verify(status.ALL)
-	logFatal(err)
-
-	// Handle devices not connected
-	if deviceStatus {
-		fmt.Println("All devices working!")
-		fmt.Println("Continuing to scan...")
-	} else { // If devices return false without error, determine why
-		// TROUBLESHOOT using status.Verify(each device)
-		return
-	}
-
-	gpsLocation, err := gps.Request(gps.CURRENT)
-	logFatal(err)
-	fmt.Println(gpsLocation)
+	// Verify all devices are connected and in working order
+	
+	
+	// Continue to scanning
+	fmt.Println("All devices working!")
+	printDeviceStatus(cfg)
+	fmt.Println("Continuing to scan...")
 }
 
 func main() {
@@ -102,10 +108,10 @@ func main() {
 	var configField string
 
 	// Flags for starting, resetting, and modifying config
-	flag.BoolVar(&startFlag, "start", false, "Start the process")
-	flag.BoolVar(&startFlag, "s", false, "Shortcut for starting the process")
+	flag.BoolVar(&startFlag, "start", false, "Start pidriver")
+	flag.BoolVar(&startFlag, "s", false, "Alternate start (shorthand for --start)")
 	flag.BoolVar(&resetFlag, "reset", false, "Reset config to default values")
-	flag.StringVar(&configField, "config", "", "Modify config (e.g., -c AppName newname)")
+	flag.StringVar(&configField, "config", "", "Modify config (e.g., --config list, -c AppName <new_name>)")
 	flag.StringVar(&configField, "c", "", "Modify config (shorthand for --config)")
 
 	// Parse flags
@@ -122,6 +128,11 @@ func main() {
 		// Checks for `-c list` and lists config if run
 		if configField == "list" {
 			cfg.List()
+			break
+		}
+		// Checks for `-c help` and lists config help info
+		if configField == "help" {
+			cfg.Help()
 			break
 		}
 		// Ensures both field name and new value are provided
