@@ -1,9 +1,13 @@
 # Log Files
 *.oppie
 *.old
+*.json
 
 # VSCode Stuff
 .vscode*
 
 # Data Files
 *.csv
+
+# Misc.
+pidriver.exe
