@@ -62,27 +62,29 @@ func printBanner(cfg *config.Config) {
 // updateConfig handles updating the configuration based on field name and value.
 func updateConfig(cfg *config.Config, fieldName, newValue string) error {
 	switch fieldName {
-	case "list":
-		cfg.List()
 	case "AppName", "Version", "Banner":
 		return cfg.Update(fieldName, newValue)
 	default:
 		return fmt.Errorf("unknown configuration field: %s", fieldName)
 	}
-	return nil
 }
 
-// start verifies device statuses and fetches GPS data.
+// start pidriver with current configuration
 func start(cfg *config.Config) {
+	// Clears screen and prints banner, author, & version #
 	printBanner(cfg)
 
+	// Verify all devices are in working order
 	deviceStatus, err := status.Verify(status.ALL)
 	logFatal(err)
 
+	// Handle devices not connected
 	if deviceStatus {
 		fmt.Println("All devices working!")
-	} else {
-		fmt.Println("Something broke")
+		fmt.Println("Continuing to scan...")
+	} else { // If devices return false without error, determine why
+		// TROUBLESHOOT using status.Verify(each device)
+		return
 	}
 
 	gpsLocation, err := gps.Request(gps.CURRENT)
@@ -91,9 +93,11 @@ func start(cfg *config.Config) {
 }
 
 func main() {
+	// Loading Config
 	cfg, err := config.Load()
 	logFatal(err)
 
+	// Declare flags
 	var startFlag, resetFlag bool
 	var configField string
 
@@ -104,29 +108,34 @@ func main() {
 	flag.StringVar(&configField, "config", "", "Modify config (e.g., -c AppName newname)")
 	flag.StringVar(&configField, "c", "", "Modify config (shorthand for --config)")
 
+	// Parse flags
 	flag.Usage = customUsage
 	flag.Parse()
 
 	switch {
-	case startFlag:
+	case startFlag: // Begins pidriver with current config
 		start(cfg)
-	case resetFlag:
+	case resetFlag: // Resets config to default settings
 		logFatal(cfg.Reset())
 		fmt.Println("Config has been reset successfully!")
-	case configField != "":
+	case configField != "": // Edit config via cli
+		// Checks for `-c list` and lists config if run
 		if configField == "list" {
-			logFatal(updateConfig(cfg, configField, ""))
+			cfg.List()
 			break
 		}
+		// Ensures both field name and new value are provided
 		args := flag.Args()
 		if len(args) < 1 {
 			fmt.Println("Please provide both field name and new value.")
 			flag.Usage()
 			os.Exit(1)
 		}
+		// Update config with new value
 		logFatal(updateConfig(cfg, configField, strings.Join(args, " ")))
 		fmt.Printf("Configuration updated: %s = %s\n", configField, strings.Join(args, " "))
 	default:
+		// Print usage
 		flag.Usage()
 		os.Exit(0)
 	}
