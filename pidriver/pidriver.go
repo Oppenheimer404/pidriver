@@ -8,8 +8,13 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+	"sync"
+	"time"
 
+	"github.com/oppenheimer404/pidriver/pidriver/bluetooth"
 	"github.com/oppenheimer404/pidriver/pidriver/config"
+	"github.com/oppenheimer404/pidriver/pidriver/gps"
+	"github.com/oppenheimer404/pidriver/pidriver/wifi"
 )
 
 // customUsage defines a custom help page for command-line flags.
@@ -51,14 +56,15 @@ func clearScreen() {
 	logFatal(err)
 }
 
-
-// printBanner displays the application's banner, version, and author.
+// printBanner displays the banner containing basic info
 func printBanner(cfg *config.Config) {
-	banner, _ := (*cfg)["Banner"].(string)
-	appName, _ := (*cfg)["AppName"].(string)
-	version, _ := (*cfg)["Version"].(string)
-	author, _ := (*cfg)["Author"].(string)
+	// Set variables using config values
+	banner, _ := (*cfg)[config.BANNER].(string)
+	appName, _ := (*cfg)[config.APP_NAME].(string)
+	version, _ := (*cfg)[config.VERSION].(string)
+	author, _ := (*cfg)[config.AUTHOR].(string)
 
+	// Clear screen before printing
 	clearScreen()
 	fmt.Printf("%s\n[%s] v%s by %s\n", banner, appName, version, author)
 }
@@ -72,9 +78,9 @@ func updateConfig(cfg *config.Config, fieldName, newValue string) error {
 // confirmation message declaring which devices are active
 func printDeviceStatus(cfg *config.Config) {
 	statuses := map[string]bool{
-		"WiFi":      (*cfg)["WifiEnabled"].(bool),
-		"Bluetooth": (*cfg)["BluetoothEnabled"].(bool),
-		"GPS":       (*cfg)["GPSEnabled"].(bool),
+		"WiFi":      (*cfg)[config.WIFI_ACTIVE].(bool),
+		"Bluetooth": (*cfg)[config.BT_ACTIVE].(bool),
+		"GPS":       (*cfg)[config.GPS_ACTIVE].(bool),
 	}
 
 	// Print the status for each device
@@ -83,19 +89,55 @@ func printDeviceStatus(cfg *config.Config) {
 	}
 }
 
-
 // start pidriver with current configuration
 func start(cfg *config.Config) {
 	// Clears screen and prints banner, author, & version #
 	printBanner(cfg)
-
-	// Verify all devices are connected and in working order
-	
-	
-	// Continue to scanning
-	fmt.Println("All devices working!")
 	printDeviceStatus(cfg)
-	fmt.Println("Continuing to scan...")
+	// Verify all devices are connected and in working order
+
+	// Create channels for device results [gps, wifi, bluetooth]
+	gpsResults := make(chan map[string]interface{})
+	wifiResults := make(chan map[string]interface{})
+	bluetoothResults := make(chan map[string]interface{})
+
+	// Map to hold latest gpsResults
+	var latestLocation map[string]interface{}
+	var mutex sync.Mutex
+
+	// Set scan rates based on config values
+	gpsRate := time.Duration((*cfg)[config.GPS_RATE].(float64))
+	wifiRate := time.Duration((*cfg)[config.WIFI_RATE].(float64))
+	bluetoothRate := time.Duration((*cfg)[config.BT_RATE].(float64))
+
+	// Start A, B, C scans as goroutines
+	go gps.StartScan(gpsRate*time.Millisecond, gpsResults)
+	go wifi.StartScan(wifiRate*time.Millisecond, wifiResults)
+	go bluetooth.StartScan(bluetoothRate*time.Millisecond, bluetoothResults)
+
+	// Listen for C results and update the latest result
+	go func() {
+		for result := range gpsResults {
+			mutex.Lock()
+			latestLocation = result
+			mutex.Unlock()
+		}
+	}()
+
+	// Main loop: associate A and B results with the latest C result
+	for {
+		select {
+		case wifiData := <-wifiResults:
+			mutex.Lock()
+			fmt.Printf("Wifi: %v Location: %v\n", wifiData, latestLocation)
+			mutex.Unlock()
+
+		case bluetoothData := <-bluetoothResults:
+			mutex.Lock()
+			fmt.Printf("Bluetooth: %v Location: %v\n", bluetoothData, latestLocation)
+			mutex.Unlock()
+		}
+	}
 }
 
 func main() {
