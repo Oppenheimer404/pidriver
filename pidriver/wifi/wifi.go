@@ -1,78 +1,56 @@
 package wifi
 
+import (
+	"crypto/rand"
+	"fmt"
+	r "math/rand"
+	"time"
+)
 
+// StartScan sends WiFi data (with mixed types) at the specified rate to a results channel.
+func StartScan(rate time.Duration, results chan<- map[string]interface{}) {
+	// Send initial device info
+	sendDeviceInfo(results)
 
+	// Continuously send device info based on the specified rate
+	for range time.Tick(rate) {
+		sendDeviceInfo(results)
+	}
+}
 
+const (
+	BSSID = "BSSID"
+	SSID = "SSID"
+	CAPABILITIES = "Capabilities"
+	FIRST_TIME_SEEN = "FirstTimestampSeen"
+	CHANNEL = "Channel"
+	FREQUENCY = "Frequency"
+	RSSI = "RSSI"
+	TYPE = "Type"
+)
 
-// package wifi
+// sendDeviceInfo sends simulated WiFi network information as a map with mixed types
+func sendDeviceInfo(results chan<- map[string]interface{}) {
+	results <- map[string]interface{}{
+		BSSID:              randomBSSID(),                   // Example BSSID as a string
+		SSID:               "Foobar",                        // Example SSID as a string
+		CAPABILITIES:       "[WPA2]",                        // Capabilities as string
+		FIRST_TIME_SEEN: time.Now().Format(time.RFC3339), // Timestamp as string
+		CHANNEL:            randomInt(1, 11),                // WiFi channel as int
+		FREQUENCY:          randomInt(2400, 5800),           // WiFi frequency as int
+		RSSI:               randomInt(-100, -30),            // Signal strength as int
+		TYPE:               "WIFI",                          // Device type as string
+	}
+}
 
-// import (
-//     "fmt"
-//     "time"
-// )
+// randomInt generates a random integer between min and max.
+func randomInt(min, max int) int {
+	return min + r.Intn(max-min)
+}
 
-// type ScanType int
-
-// const (
-//     ALL_DATA ScanType = iota
-// )
-
-// // startScan simulates a process that runs at a specified rate for a given duration.
-// func startScan(ch chan<- string, rate int, duration time.Duration) {
-// 	ticker := time.NewTicker(time.Duration(1000/rate) * time.Millisecond) // Ticker based on rate (times per second)
-// 	defer ticker.Stop()
-
-// 	timer := time.NewTimer(duration) // Timer to stop after duration
-// 	defer timer.Stop()
-
-// 	count := 0
-
-// 	// Loop until the timer expires
-// 	for {
-// 		select {
-// 		case <-ticker.C:
-// 			count++
-// 			ch <- fmt.Sprintf("tick %d", count) // Send count to the channel
-
-// 		case <-timer.C:
-// 			close(ch) // Stop when the duration has passed
-// 			return
-// 		}
-// 	}
-// }
-
-// func packageData() {
-//     scanData := make(chan string)
-
-// 	// Start the scan in a goroutine
-// 	go startScan(scanData, 3, 1*time.Minute)
-
-// 	var results []string
-// 	for msg := range scanData {
-// 		results = append(results, msg)
-// 		if len(results) == 10 {
-// 			// Print the current batch of 10 results
-// 			fmt.Println("Batch of 10 results:")
-// 			for _, result := range results {
-// 				fmt.Println(result)
-// 			}
-// 			fmt.Println("---------------------")
-// 			results = nil
-// 		}
-// 	}
-
-// 	// Print any remaining results after the loop
-// 	if len(results) > 0 {
-// 		fmt.Println("Final batch of results:")
-// 		for _, result := range results {
-// 			fmt.Println(result)
-// 		}
-// 		fmt.Println("---------------------")
-// 	}
-
-// 	fmt.Println("Main function completed")
-// }
-
-// func Request() {
-    
-//     }
+// randomBSSID generates a random BSSID string.
+func randomBSSID() string {
+	bssid := make([]byte, 6)
+	rand.Read(bssid)
+	return fmt.Sprintf("%02x:%02x:%02x:%02x:%02x:%02x", bssid[0], bssid[1], bssid[2], bssid[3], bssid[4], bssid[5])
+}
