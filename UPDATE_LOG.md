@@ -1,5 +1,9 @@
 Updates Log
 
+October 21, 2024
+
+    Working logging package.
+
 October 11, 2024
 
     Refactored code for improved readability and performance. Config JSON is now ignored, and configuration is functioning correctly.

@@ -18,17 +18,28 @@ func StartScan(rate time.Duration, results chan<- map[string]interface{}) {
 	}
 }
 
+const (
+	BSSID = "BSSID"
+	SSID = "SSID"
+	CAPABILITIES = "Capabilities"
+	FIRST_TIME_SEEN = "FirstTimestampSeen"
+	CHANNEL = "Channel"
+	FREQUENCY = "Frequency"
+	RSSI = "RSSI"
+	TYPE = "Type"
+)
+
 // sendDeviceInfo sends simulated WiFi network information as a map with mixed types
 func sendDeviceInfo(results chan<- map[string]interface{}) {
 	results <- map[string]interface{}{
-		"BSSID":              randomBSSID(),                   // Example BSSID as a string
-		"SSID":               "Foobar",                        // Example SSID as a string
-		"Capabilities":       "[WPA2]",                        // Capabilities as string
-		"FirstTimestampSeen": time.Now().Format(time.RFC3339), // Timestamp as string
-		"Channel":            randomInt(1, 11),                // WiFi channel as int
-		"Frequency":          randomInt(2400, 5800),           // WiFi frequency as int
-		"RSSI":               randomInt(-100, -30),            // Signal strength as int
-		"Type":               "WIFI",                          // Device type as string
+		BSSID:              randomBSSID(),                   // Example BSSID as a string
+		SSID:               "Foobar",                        // Example SSID as a string
+		CAPABILITIES:       "[WPA2]",                        // Capabilities as string
+		FIRST_TIME_SEEN: time.Now().Format(time.RFC3339), // Timestamp as string
+		CHANNEL:            randomInt(1, 11),                // WiFi channel as int
+		FREQUENCY:          randomInt(2400, 5800),           // WiFi frequency as int
+		RSSI:               randomInt(-100, -30),            // Signal strength as int
+		TYPE:               "WIFI",                          // Device type as string
 	}
 }
 

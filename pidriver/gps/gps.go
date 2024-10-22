@@ -14,14 +14,21 @@ func StartScan(rate time.Duration, results chan<- map[string]interface{}) {
 	}
 }
 
+const (
+	LAT = "Latitude"
+	LON = "Longitude"
+	ALT = "Altitude"
+	ACCURACY = "Accuracy"
+)
+
 // sendLocation retrieves and sends the GPS location data to the results channel.
 func sendLocation(results chan<- map[string]interface{}) {
 	// Send example GPS data as integers
 	results <- map[string]interface{}{
-		"latitude":  randomInt(-90, 90),
-		"longitude": randomInt(-180, 180),
-		"altitude":  rand.Intn(1000), // Example altitude in meters
-		"accuracy":  rand.Intn(10),   // Example accuracy in meters
+		LAT:  randomInt(-90, 90),
+		LON: randomInt(-180, 180),
+		ALT:  rand.Intn(1000), // Example altitude in meters
+		ACCURACY:  rand.Intn(10),   // Example accuracy in meters
 	}
 }
 

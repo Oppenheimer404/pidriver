@@ -18,6 +18,17 @@ func StartScan(rate time.Duration, results chan<- map[string]interface{}) {
 	}
 }
 
+const (
+	CELL_KEY = "CellKey"
+	NETWORK_NAME = "NetworkName"
+	CAPABILITIES = "Capabilities"
+	FIRST_TIME_SEEN = "FirstTimestampSeen"
+	CHANNEL = "Channel"
+	FREQUENCY = "Frequency"
+	RSSI = "RSSI"
+	TYPE = "Type"
+)
+
 // sendDeviceInfo sends simulated Bluetooth network information as a map with mixed types
 func sendDeviceInfo(results chan<- map[string]interface{}) {
 	results <- map[string]interface{}{

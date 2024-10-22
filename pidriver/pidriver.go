@@ -1,6 +1,8 @@
 package main
 
+// Imports
 import (
+	// default imports
 	"flag"
 	"fmt"
 	"log"
@@ -11,9 +13,11 @@ import (
 	"sync"
 	"time"
 
+	// package imports
 	"github.com/oppenheimer404/pidriver/pidriver/bluetooth"
 	"github.com/oppenheimer404/pidriver/pidriver/config"
 	"github.com/oppenheimer404/pidriver/pidriver/gps"
+	"github.com/oppenheimer404/pidriver/pidriver/logging"
 	"github.com/oppenheimer404/pidriver/pidriver/wifi"
 )
 
@@ -35,9 +39,10 @@ For more information, visit the documentation or run 'pidriver --help'.
 `)
 }
 
-// logFatal logs and exits on error.
+// logFatal logs info and exits on error.
 func logFatal(err error) {
 	if err != nil {
+		logging.Error(err, "Fatal Error")
 		log.Fatal(err)
 	}
 }
@@ -129,12 +134,12 @@ func start(cfg *config.Config) {
 		select {
 		case wifiData := <-wifiResults:
 			mutex.Lock()
-			fmt.Printf("Wifi: %v Location: %v\n", wifiData, latestLocation)
+			logging.Default(wifiData, latestLocation)
 			mutex.Unlock()
 
 		case bluetoothData := <-bluetoothResults:
 			mutex.Lock()
-			fmt.Printf("Bluetooth: %v Location: %v\n", bluetoothData, latestLocation)
+			logging.Default(bluetoothData, latestLocation)
 			mutex.Unlock()
 		}
 	}
