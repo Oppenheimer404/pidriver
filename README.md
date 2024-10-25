@@ -15,6 +15,35 @@ Built to run on the Raspberry Pi Zero 2 W:
 
 ---
 
+## Documentation
+
+- [Package]
+    - [Function]
+        - [Details]
+        - [Input]
+        - [Output]
+        - [Errors]
+
+- [pidriver]
+    - [clearScreen()]
+    - [logFatal(err)]
+    - [printUsageInfo()]
+    - [printBanner(cfg)]
+    - [printDeviceStatus(cfg)]
+    - [updateConfig(cfg,fieldName,newValue)]
+    - [start(cfg)]
+    - [main()]
+
+
+---
+
+## To-do List
+
+- Proper device checks in main package
+- File name for logger output should be set to default value based on date and time of scan start & allow custom config value
+
+---
+
 ## Setup Raspberry Pi Zero 2 W
 1. Download the latest version of `Raspberry Pi Imager` from [The Official Raspberry Pi Website](https://www.raspberrypi.com/software/)
 **Note:** We will be using SSH to connect via another computer. Please enable SSH and provide network details during flash process.

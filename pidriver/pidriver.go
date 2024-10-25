@@ -21,8 +21,30 @@ import (
 	"github.com/oppenheimer404/pidriver/pidriver/wifi"
 )
 
-// customUsage defines a custom help page for command-line flags.
-func customUsage() {
+// clearScreen clears the terminal screen based on the OS.
+func clearScreen() {
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "cls")
+	default:
+		cmd = exec.Command("clear")
+	}
+	cmd.Stdout = os.Stdout
+	err := cmd.Run()
+	logFatal(err)
+}
+
+// logFatal logs info and exits on error.
+func logFatal(err error) {
+	if err != nil {
+		logging.Error(err, "Fatal Error")
+		log.Fatal(err)
+	}
+}
+
+// printUsageInfo defines a custom help page for command-line flags.
+func printUsageInfo() {
 	fmt.Fprintf(os.Stderr, `Usage:
 	pidriver [options]
 
@@ -37,28 +59,6 @@ Options:
 
 For more information, visit the documentation or run 'pidriver --help'.
 `)
-}
-
-// logFatal logs info and exits on error.
-func logFatal(err error) {
-	if err != nil {
-		logging.Error(err, "Fatal Error")
-		log.Fatal(err)
-	}
-}
-
-// clearScreen clears the terminal screen based on the OS.
-func clearScreen() {
-	var cmd *exec.Cmd
-	switch runtime.GOOS {
-	case "windows":
-		cmd = exec.Command("cmd", "/c", "cls")
-	default:
-		cmd = exec.Command("clear")
-	}
-	cmd.Stdout = os.Stdout
-	err := cmd.Run()
-	logFatal(err)
 }
 
 // printBanner displays the banner containing basic info
@@ -98,8 +98,8 @@ func printDeviceStatus(cfg *config.Config) {
 func start(cfg *config.Config) {
 	// Clears screen and prints banner, author, & version #
 	printBanner(cfg)
-	printDeviceStatus(cfg)
 	// Verify all devices are connected and in working order
+	printDeviceStatus(cfg)
 
 	// Create channels for device results [gps, wifi, bluetooth]
 	gpsResults := make(chan map[string]interface{})
@@ -162,7 +162,7 @@ func main() {
 	flag.StringVar(&configField, "c", "", "Modify config (shorthand for --config)")
 
 	// Parse flags
-	flag.Usage = customUsage
+	flag.Usage = printUsageInfo
 	flag.Parse()
 
 	switch {
