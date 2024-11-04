@@ -14,6 +14,7 @@ const (
 	AUTHOR      = "Author"
 	BANNER      = "Banner"
 	VERSION     = "Version"
+	VERBOSE     = "VerboseMode"
 	WIFI_ACTIVE = "WifiEnabled"
 	WIFI_RATE   = "WifiRate"
 	BT_ACTIVE   = "BluetoothEnabled"

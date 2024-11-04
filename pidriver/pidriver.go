@@ -43,6 +43,14 @@ func logFatal(err error) {
 	}
 }
 
+// printInfo is used to print general information to console - affected by verbose mode
+func printInfo (label string, info string, cfg *config.Config) {
+	verboseMode, _ := (*cfg)[config.VERBOSE].(bool)
+	if verboseMode {
+		fmt.Printf("[%s] %s \n", label, info)
+	}
+}
+
 // printUsageInfo defines a custom help page for command-line flags.
 func printUsageInfo() {
 	fmt.Fprintf(os.Stderr, `Usage:
@@ -90,7 +98,7 @@ func printDeviceStatus(cfg *config.Config) {
 
 	// Print the status for each device
 	for name, enabled := range statuses {
-		fmt.Printf("[%s %s]\n", name, map[bool]string{true: "enabled", false: "disabled"}[enabled])
+		printInfo(name, map[bool]string{true: "enabled", false: "disabled"}[enabled], cfg)
 	}
 }
 
