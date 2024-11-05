@@ -11,10 +11,14 @@ import (
 	"github.com/oppenheimer404/pidriver/pidriver/diagnose"
 )
 
+func start(cfg *config.Config) {
+
+}
+
 func main() {
 	// Loading Config
 	cfg, err := config.Load() // config.Load() returns (*Config, error)
-	diagnose.Error(err)       // diagnose any errors
+	diagnose.Error(err)       // diagnose errors
 
 	// Declare all flags
 	var startFlag, resetFlag bool // boolean flags
@@ -27,43 +31,37 @@ func main() {
 	flag.StringVar(&configField, "config", "", "Modify config (e.g., --config list, -c AppName <new_name>)")
 	flag.StringVar(&configField, "c", "", "Modify config (shorthand for --config)")
 
-    // Set default usage info to custom message (-h or --help)
-	flag.Usage = printUsageInfo
+	// Set default usage info to custom message (-h or --help)
+	flag.Usage = config.CustomUsageInfo
 
-	// Parse flags
+	// Parse user flags (e.g. -s, --start)
 	flag.Parse()
-
-	switch {
-	case startFlag: // Begins pidriver with current config
-		start(cfg)
-	case resetFlag: // Resets config to default settings
-		err := cfg.Reset()
-		diagnose.Error(err)
-		fmt.Println("Config has been reset successfully!")
-	case configField != "": // Edit config via cli
-		// Checks for `-c list` and lists config if run
-		if configField == "list" {
-			cfg.List()
+	switch { // Switch for differentiating flags
+	case startFlag: // -s or --start
+		start(cfg) // start pidriver with current config values
+	case resetFlag: // --reset
+		err := cfg.Reset()  // reset config value to default values
+		diagnose.Error(err) // diagnose errors
+	case configField != "": // -c or --config
+		if configField == "list" { // special input `list``
+			cfg.List() // list all current config values
 			break
 		}
-		// Checks for `-c help` and lists config help info
-		if configField == "help" {
-			cfg.Help()
+		if configField == "help" { // special input `help` (not the same as -h)
+			cfg.Help() // list configuration help info
 			break
 		}
-		// Ensures both field name and new value are provided
+		// Evaluate config arguments [field_name new_value] expected
 		args := flag.Args()
-		if len(args) < 1 {
-			fmt.Println("Please provide both field name and new value.")
-			flag.Usage()
-			os.Exit(1)
+		if len(args) < 1 { // determine if there is at least two values
+			flag.Usage() // print usage information
+			err := fmt.Errorf("0[Configuration] config requires both field_name and new_value")
+			diagnose.Error(err) // diagnose errors
 		}
-		// Update config with new value
-		err := updateConfig(cfg, configField, strings.Join(args, " "))
-		diagnose.Error(err)
+		err := cfg.Update(configField, strings.Join(args, " ")) // update config value
+		diagnose.Error(err)                                     // diagnose errors
 		fmt.Printf("Configuration updated: %s = %s\n", configField, strings.Join(args, " "))
 	default:
-		// Print usage
 		flag.Usage()
 		os.Exit(0)
 	}

@@ -50,6 +50,25 @@ var defaultConfig = Config{
 	"VerboseMode":      true,
 }
 
+
+// customUsageInfo defines a custom help page for command-line flags.
+func CustomUsageInfo() {
+	fmt.Fprintf(os.Stderr, `Usage:
+	pidriver [options]
+
+Options:
+	--start, -s        Start pidriver with the current configuration.
+	--reset            Reset the configuration to default values.
+	--config, -c       Modify configuration settings. Examples:
+	                   --config list            Show current configuration settings.
+	                   --config AppName <new_name> Update the AppName in the configuration.
+	                   -c AppName <new_name>   Shorthand for updating the configuration.
+	                   Use --config help for more details on config options.
+
+For more information, visit the documentation or run 'pidriver --help'.
+`)
+}
+
 // List lists the current configuration
 func (c *Config) Help() {
 	fmt.Fprintf(os.Stderr, `Configuration Options:

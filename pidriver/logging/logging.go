@@ -3,6 +3,7 @@ package logging
 
 import (
 	"encoding/csv"
+	"log"
 	"fmt"
 	"os"
 	"strconv"
@@ -138,6 +139,6 @@ func Default(deviceData map[string]interface{}, gpsData map[string]interface{}) 
 	}
 }
 
-func Error(err error, info string) {
-	fmt.Printf("Error Logged: [%v] Reason: [%s] \n", err, info)
+func Error(info string) {
+	log.Printf("[Logging] error logged: [%v] \n", info)
 }
