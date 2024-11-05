@@ -50,68 +50,40 @@ var defaultConfig = Config{
 	"VerboseMode":      true,
 }
 
-// createDefaultConfig initializes the default configuration and writes it to a file.
-func createDefaultConfig(filePath string) (*Config, error) {
-	fmt.Println("Creating new configuration file with default values...")
-
-	if err := writeConfigToFile(&defaultConfig, filePath); err != nil {
-		return nil, err
-	}
-
-	return &defaultConfig, nil
-}
-
-// writeConfigToFile writes the configuration to a specified file.
-func writeConfigToFile(config *Config, filePath string) error {
-	file, err := os.Create(filePath)
-	if err != nil {
-		return fmt.Errorf("failed to open config file %s for writing: %v", filePath, err)
-	}
-	defer file.Close()
-
-	encoder := json.NewEncoder(file)
-	encoder.SetIndent("", "    ") // Pretty print
-	if err := encoder.Encode(config); err != nil {
-		return fmt.Errorf("failed to save config to file %s: %v", filePath, err)
-	}
-
-	return nil
-}
-
 // List lists the current configuration
 func (c *Config) Help() {
 	fmt.Fprintf(os.Stderr, `Configuration Options:
 	
-General Configuration:
+	General Configuration:
 	- AppName <new_name>         Set the name of the application.
 	- Version <new_version>      Update the application version.
 	- Banner <new_banner>        Update the banner displayed at startup.
-
-WiFi Configuration:
+	
+	WiFi Configuration:
 	- WifiEnabled <true/false>   Enable or disable WiFi scanning.
 	- WifiRate <rate>            Set the scanning rate for WiFi networks (in milliseconds).
-
-Bluetooth Configuration:
+	
+	Bluetooth Configuration:
 	- BluetoothEnabled <true/false> Enable or disable Bluetooth scanning.
 	- BluetoothRate <rate>       Set the scanning rate for Bluetooth devices (in milliseconds).
-
-GPS Configuration:
+	
+	GPS Configuration:
 	- GPSEnabled <true/false>    Enable or disable GPS tracking.
 	- GPSRate <rate>             Set the location update rate for GPS (in milliseconds).
 	- GPSTimeout <timeout>       Set the maximum wait time for a GPS fix (in seconds).
-
-Misc. Configuration:
+	
+	Misc. Configuration:
 	- VerboseMode <true/false>		Enable or disable logging output to console
-
-To modify a setting, use the following syntax:
+	
+	To modify a setting, use the following syntax:
 	--config <Option> <new_value>
-Examples:
+	Examples:
 	--config RateWifi 500
 	--config WifiEnabled true
 	--config GPSTimeout 30
-
-For more details, visit the documentation or run 'pidriver --help'.
-`)
+	
+	For more details, visit the documentation or run 'pidriver --help'.
+	`)
 }
 
 // parseInt converts interface to int if possible.
@@ -151,6 +123,14 @@ func parseBool(value interface{}) (bool, error) {
 		return v, nil
 	default:
 		return false, fmt.Errorf("cannot convert %v to bool", value)
+	}
+}
+
+// List lists the current configuration
+func (c *Config) List() {
+	fmt.Println("Current Configuration:")
+	for key, value := range *c {
+		fmt.Printf("%s: %v\n", key, value)
 	}
 }
 
@@ -200,25 +180,49 @@ func (c *Config) Reset() error {
 	return writeConfigToFile(c, DEFAULT_CONF)
 }
 
-// List lists the current configuration
-func (c *Config) List() {
-	fmt.Println("Current Configuration:")
-	for key, value := range *c {
-		fmt.Printf("%s: %v\n", key, value)
+// writeConfigToFile writes the configuration to a specified file.
+func writeConfigToFile(config *Config, filePath string) error {
+	// Open config file for writing
+	file, err := os.Create(filePath)
+	if err != nil {
+		return fmt.Errorf("failed to open config file %s for writing: %v", filePath, err)
 	}
+	defer file.Close()
+
+	// Write to config file using json encoding
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "    ") // Pretty print
+	if err := encoder.Encode(config); err != nil {
+		return fmt.Errorf("failed to save config to file %s: %v", filePath, err)
+	}
+
+	return nil
+}
+
+// createDefaultConfig initializes the default configuration and writes it to a file.
+func createDefaultConfig(filePath string) (*Config, error) {
+	// Attempts to write config as default values
+	if err := writeConfigToFile(&defaultConfig, filePath); err != nil {
+		return nil, err
+	}
+	return &defaultConfig, nil
 }
 
 // Load loads the configuration from config.json, or creates it if not found.
 func Load() (*Config, error) {
+	// Set default configuration file (config.json)
 	filePath := DEFAULT_CONF
+	// Attempt to open existing config file
 	file, err := os.Open(filePath)
-	if os.IsNotExist(err) {
-		return createDefaultConfig(filePath)
+	// Check for errors
+	if os.IsNotExist(err) { // If file doesn't exist-
+		return createDefaultConfig(filePath) // -create file with default config
 	} else if err != nil {
 		return nil, fmt.Errorf("failed to open config file: %v", err)
 	}
 	defer file.Close()
 
+	// Decodes and loads config values into Config
 	var config Config
 	if err := json.NewDecoder(file).Decode(&config); err != nil {
 		return nil, fmt.Errorf("failed to decode config file: %v", err)
